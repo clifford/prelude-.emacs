@@ -95,6 +95,22 @@
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
+;; Unicode character support
+(define-abbrev-table 'global-abbrev-table '(
+                                            ("alpha" "α")
+                                            ("beta" "β")
+                                            ("gamma" "γ")
+                                            ("theta" "θ")
+                                            ("inf" "∞")
+
+                                            ("ar1" "⟶")
+                                            ("ar2" "⇒")
+                                            ))
+
+(abbrev-mode 1)
+;; type abbreviation, followed by, C-x a e     to expand the abbreviation
+;; to add new unicode characters see: http://www.johndcook.com/blog/emacs_unicode/
+;; to get list of unicode hex codes, see: http://www.unicode.org/charts/#symbols
 
 (provide 'personal)
 ;;; personal.el ends here
