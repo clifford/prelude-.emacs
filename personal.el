@@ -12,8 +12,9 @@
 
 ;; Borrowed by Emacs Prelude
 (defvar enocom-packages
-  '(clj-refactor markdown-mode paredit paxedit rainbow-delimiters)
+  '(clj-refactor markdown-mode paredit paxedit rainbow-delimiters clojure-quick-repls)
   "A list of packages to ensure are installed at launch.")
+
 
 (dolist (p enocom-packages)
   (when (not (package-installed-p p))
