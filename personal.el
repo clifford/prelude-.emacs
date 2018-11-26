@@ -12,7 +12,7 @@
 
 ;; Borrowed by Emacs Prelude
 (defvar enocom-packages
-  '(clj-refactor markdown-mode paredit paxedit rainbow-delimiters clojure-quick-repls)
+  '(markdown-mode paredit paxedit rainbow-delimiters clojure-quick-repls)
   "A list of packages to ensure are installed at launch.")
 
 
@@ -41,15 +41,11 @@
 
 (custom-set-variables
  '(backup-directory-alist (quote (("." . "/tmp/emacs-backups"))))
-;; '(cider-popup-stacktraces nil)
-;; '(column-number-mode t)
- ;; '(delete-old-versions t)
- ;; '(fringe-mode 0 nil (fringe))
  '(global-auto-complete-mode t)
- ;; '(magit-set-upstream-on-push t)
  '(menu-bar-mode nil)
  '(scroll-bar-mode nil)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(cider-auto-select-error-buffer nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; key bindings
@@ -74,21 +70,18 @@
 (eval-after-load "cider"
   '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
 
-;; (eval-after-load "auto-complete"
-;;   '(add-to-list 'ac-modes 'cider-repl-mode))
-
 (eval-after-load 'clojure-mode
   '(progn
      (require 'paredit)
      (require 'paxedit)
-     (require 'clj-refactor)
+;;     (require 'clj-refactor)
      ;; (require 'ac-nrepl)
      (defun clojure-paredit-hook () (paredit-mode +1))
-     (defun clj-refactor-hook ()
-       (clj-refactor-mode 1)
-       (cljr-add-keybindings-with-prefix "C-c C-m"))
+     ;; (defun clj-refactor-hook ()
+     ;;   (clj-refactor-mode 1)
+     ;;   (cljr-add-keybindings-with-prefix "C-c C-m"))
      (add-hook 'clojure-mode-hook 'clojure-paredit-hook)
-     (add-hook 'clojure-mode-hook 'clj-refactor-hook)
+     ;; (add-hook 'clojure-mode-hook 'clj-refactor-hook)
      ;; (add-hook 'clojure-mode-hook 'auto-complete-mode)
      ;; (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
      ;; (add-hook 'cider-mode-hook 'ac-nrepl-setup)
@@ -108,10 +101,56 @@
                                             ("ar2" "⇒")
                                             ))
 
+(setq nrepl-sync-request-timeout nil)
+
 (abbrev-mode 1)
 ;; type abbreviation, followed by, C-x a e     to expand the abbreviation
 ;; to add new unicode characters see: http://www.johndcook.com/blog/emacs_unicode/
 ;; to get list of unicode hex codes, see: http://www.unicode.org/charts/#symbols
+
+;; ------------------ kdb -----------------------------
+(autoload 'q-mode "q-mode.el")
+
+(add-to-list 'auto-mode-alist '("\\.[kq]\\'" . q-mode))
+
+;; (provide 'q-mode)
+
+;; ------------------- hoplon --------------------------
+;; To recognize hoplon files correctly add this to your .emacs
+
+(add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojurescript-mode))
+
+;; To properly indent hoplon macros. The following is extended from Alan's dotspacemacs:
+(add-hook 'clojure-mode-hook
+          '(lambda ()
+             ;; Hoplon functions and macros
+             (dolist (pair '((page . 'defun)
+                             (loop-tpl . 'defun)
+                             (if-tpl . '1)
+                             (for-tpl . '1)
+                             (case-tpl . '1)
+                             (cond-tpl . 'defun)))
+               (put-clojure-indent (car pair)
+                                   (car (last pair))))))
+
+;; ------------------- elm --------------------------
+(autoload 'elm-mode "elm-mode.el")
+
+(add-to-list 'auto-mode-alist '("\\.[elm]\\'" . elm-mode))
+(setq elm-tags-on-save t)
+
+
+;; -------------------- j -----------------------------
+(autoload 'j-mode "j-mode.el"  "Major mode for J." t)
+(autoload 'j-shell "j-mode.el" "Run J from emacs." t)
+(setq auto-mode-alist
+      (cons '("\\.ij[rstp]" . j-mode) auto-mode-alist))
+
+(setq j-command "jconsole")
+
+;;https://github.com/geocar/kq-mode
+;;(autoload 'kq-mode "kq-mode.el")
+;;(add-to-list 'auto-mode-alist '("\\.[kq]\\'" . kq-mode))
 
 (provide 'personal)
 ;;; personal.el ends here
